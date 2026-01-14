@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LettriisMaui.Resources.Themes.Theme_Christmas">
+
+    <x:String x:Key="ThemeName">Christmas</x:String>
+
+    <!-- Must include these keys so pages never lose images -->
+    <FileImageSource x:Key="LoadingImage">bg_xmas_loading.png</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage">bg_xmas_game.png</FileImageSource>
+
+    <!-- Optional per-level overrides -->
+    <FileImageSource x:Key="GameBackgroundImage_Lv_1_5">bg_xmas_lv_1_5.png</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage_Lv_6_10">bg_xmas_lv_6_10.png</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage_Lv_11_15">bg_xmas_lv_11_15.png</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage_Lv_16_20">bg_xmas_lv_16_20.png</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage_Lv_20_Plus">bg_xmas_lv_20_up.png</FileImageSource>
+
+    <Color x:Key="ShellBackground">#07140B</Color>
+</ResourceDictionary>

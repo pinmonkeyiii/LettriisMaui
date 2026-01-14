@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-windows10.0.19041.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>LettriisMaui</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <ApplicationTitle>Lettriis</ApplicationTitle>
+    <ApplicationId>com.gardinerinteractive.lettriis</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+  </PropertyGroup>
+  
+  <!--<WindowsPackageType>MSIX</WindowsPackageType> -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'">
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows10.0.19041.0'">
+    <!-- Ensure Windows App.xaml is compiled by WinUI XAML compiler -->
+    <ApplicationDefinition Update="Platforms\Windows\App.xaml" />
+    <!-- Ensure MAUI XamlC does NOT try to compile this WinUI XAML -->
+    <MauiXaml Remove="Platforms\Windows\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiImage Include="Resources\Images\**\*.*" />
+    <MauiFont Include="Resources\Fonts\**\*.*" />
+    <MauiAsset Include="Resources\Raw\**\*.*" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
+    <PackageReference Include="Plugin.Maui.Audio" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MauiXaml Update="Controls\BackgroundTransitionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Resources\Themes\Theme.Alt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Resources\themes\Theme.Christmas.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\GameOverPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
+
+</Project>

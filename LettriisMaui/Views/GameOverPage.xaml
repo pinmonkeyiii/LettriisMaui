@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LettriisMaui.Views.GameOverPage"
+             BackgroundColor="#0A0A0E"
+             Title="Game Over">
+
+    <Grid Padding="24">
+
+        <!-- Background (matches StartPage vibe) -->
+        <Image Source="{DynamicResource GameBackgroundImage}"
+               Aspect="AspectFill"
+               Opacity="1"
+               InputTransparent="True" />
+
+        <BoxView Color="#000000"
+                 Opacity="0.55"
+                 InputTransparent="True" />
+
+        <!-- Main card -->
+        <Border HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Stroke="#E6C36A"
+                StrokeThickness="1"
+                BackgroundColor="#1E1F26"
+                Padding="18"
+                StrokeShape="RoundRectangle 18">
+
+            <VerticalStackLayout Spacing="14" WidthRequest="520" MaximumWidthRequest="720">
+
+                <Label Text="Game Over"
+                       FontSize="34"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+
+                <!-- Stats -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                      RowSpacing="10" ColumnSpacing="12">
+
+                    <Label Text="Score" TextColor="#DCDCE6" Opacity="0.92" />
+                    <Label Grid.Column="1" Text="{Binding ScoreText}" TextColor="White" FontAttributes="Bold" />
+
+                    <Label Grid.Row="1" Text="Level" TextColor="#DCDCE6" Opacity="0.92" />
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding LevelText}" TextColor="White" />
+
+                    <Label Grid.Row="2" Text="Duration" TextColor="#DCDCE6" Opacity="0.92" />
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding DurationText}" TextColor="White" />
+
+                    <Label Grid.Row="3" Text="Lines" TextColor="#DCDCE6" Opacity="0.92" />
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding LinesText}" TextColor="White" />
+
+                    <Label Grid.Row="4" Text="Words" TextColor="#DCDCE6" Opacity="0.92" />
+                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding WordsText}" TextColor="White" />
+                </Grid>
+
+                <!-- Submit -->
+                <Border BackgroundColor="#262834"
+                        Stroke="#E6C36A"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="14">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Save to High Scores"
+                               FontSize="16"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+
+                        <Entry Placeholder="Name"
+                               Text="{Binding PlayerName}"
+                               TextColor="White"
+                               PlaceholderColor="#A0A0AA"
+                               BackgroundColor="#2E2E38"
+                               ClearButtonVisibility="WhileEditing"/>
+
+                        <Button Text="{Binding SubmitButtonText}"
+                                Command="{Binding SubmitCommand}"
+                                BackgroundColor="#78C8FF"
+                                TextColor="#0A0A0E"
+                                CornerRadius="14"
+                                Padding="12,10"
+                                IsEnabled="{Binding HasResult}" />
+
+                        <Label Text="{Binding SubmittedMessage}"
+                               TextColor="#DCDCE6"
+                               Opacity="0.92"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Navigation buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Text="Play Again"
+                            Command="{Binding PlayAgainCommand}"
+                            BackgroundColor="#262834"
+                            TextColor="White"
+                            CornerRadius="14"
+                            Padding="12,10"/>
+
+                    <Button Grid.Column="1"
+                            Text="Back to Start"
+                            Command="{Binding BackToStartCommand}"
+                            BackgroundColor="#262834"
+                            TextColor="White"
+                            CornerRadius="14"
+                            Padding="12,10"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>

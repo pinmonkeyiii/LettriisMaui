@@ -1,0 +1,326 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:LettriisMaui.ViewModels"
+             xmlns:controls="clr-namespace:LettriisMaui.Controls"
+             x:Class="LettriisMaui.Views.GamePage"
+             x:DataType="viewmodels:GameViewModel"
+             BackgroundColor="#0A0A0E">
+
+    <Grid ColumnDefinitions="*,340">
+        <!-- Game area -->
+        <Grid x:Name="GameAreaRoot" Grid.Column="0">
+            <controls:BackgroundTransitionView
+                        x:Name="Bg"
+                        DurationMs="500"
+                        IsEnabled="True"
+                        InputTransparent="True" />
+
+            <!-- background flash layer (level-up bloom) -->
+            <BoxView x:Name="LevelFlash"
+                     InputTransparent="True"
+                     BackgroundColor="White"
+                     Opacity="0"
+                     IsVisible="True" />
+
+            <GraphicsView x:Name="GameView" InputTransparent="True" />
+
+            <!-- On-screen controls overlay -->
+            <Grid Padding="16" HorizontalOptions="End" VerticalOptions="End"
+                  RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto,Auto"
+                  RowSpacing="10" ColumnSpacing="10">
+
+                <Button Text="◀" Clicked="Left"  WidthRequest="72" HeightRequest="72" CornerRadius="16" />
+                <Button Text="▶" Clicked="Right" WidthRequest="72" HeightRequest="72" CornerRadius="16" Grid.Column="1"/>
+                <Button Text="▼" Pressed="DownPressed" Released="DownReleased"
+                        WidthRequest="72" HeightRequest="72" CornerRadius="16" Grid.Column="2"/>
+
+                <Button Text="⤾" Clicked="Rotate" WidthRequest="72" HeightRequest="72" CornerRadius="16" Grid.Row="1"/>
+                <Button Text="H" Clicked="Hold"  WidthRequest="72" HeightRequest="72" CornerRadius="16" Grid.Row="1" Grid.Column="1"/>
+                <Button Text="⤓" Clicked="Drop"  WidthRequest="72" HeightRequest="72" CornerRadius="16" Grid.Row="1" Grid.Column="2"/>
+            </Grid>
+
+            <!-- Game over overlay -->
+            <Grid x:Name="GameOverOverlay" IsVisible="{Binding IsGameOver}"
+                  BackgroundColor="#000000AA"
+                  Padding="24"
+                  InputTransparent="False">
+                <Border BackgroundColor="#222228"
+                        Stroke="#FFFFFF40"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="440">
+                    <Border.Shadow>
+                        <Shadow Opacity="0.35" Radius="12" Offset="0,6" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="GAME OVER"
+                               FontSize="34"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center" />
+
+                        <Label Text="{Binding Score, StringFormat='Score: {0}'}"
+                               FontSize="18"
+                               TextColor="#DCDCE6"
+                               HorizontalTextAlignment="Center" />
+
+                        <Label Text="NEW HIGH SCORE!"
+                               IsVisible="{Binding IsNewHighScore}"
+                               FontSize="14"
+                               TextColor="#78C8FF"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center" />
+
+                        <Button Text="Restart"
+                                Clicked="RestartClicked"
+                                BackgroundColor="#78C8FF"
+                                TextColor="Black"
+                                CornerRadius="14" />
+
+                        <Label Text="Esc/P: restart"
+                               FontSize="12"
+                               TextColor="#DCDCE6"
+                               Opacity="0.75"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Pause overlay -->
+            <Grid x:Name="PauseOverlay" IsVisible="{Binding IsPaused}"
+                  BackgroundColor="#00000088"
+                  Padding="24"
+                  InputTransparent="False">
+                <Border BackgroundColor="#222228"
+                        Stroke="#FFFFFF40"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="420">
+                    <Border.Shadow>
+                        <Shadow Opacity="0.35" Radius="12" Offset="0,6" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="PAUSED"
+                               FontSize="34"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Button Text="Resume"
+                                    Clicked="ResumeClicked"
+                                    BackgroundColor="#78C8FF"
+                                    TextColor="Black"
+                                    CornerRadius="14"
+                                    Grid.Column="0"/>
+                            <Button Text="Restart"
+                                    Clicked="RestartClicked"
+                                    BackgroundColor="#3A3A46"
+                                    TextColor="White"
+                                    CornerRadius="14"
+                                    Grid.Column="1"/>
+                        </Grid>
+
+                        <Label Text="Esc/P: toggle pause • R: restart"
+                               FontSize="12"
+                               TextColor="#DCDCE6"
+                               Opacity="0.75"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Quiz overlay on top of game -->
+            <Grid x:Name="QuizOverlay" IsVisible="{Binding IsQuizVisible}"
+                  BackgroundColor="#00000099"
+                  Padding="24"
+                  InputTransparent="False">
+                <Border BackgroundColor="#222228"
+                        Stroke="#FFFFFF40"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="24"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="520"
+                        MaximumWidthRequest="640">
+                    <Border.Shadow>
+                        <Shadow Opacity="0.35" Radius="12" Offset="0,6" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="{Binding QuizWord}"
+                               FontSize="34"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Pick the correct definition"
+                               FontSize="16"
+                               TextColor="#DCDCE6"
+                               Opacity="0.85"
+                               HorizontalTextAlignment="Center" />
+
+                        <ScrollView HeightRequest="320">
+                            <VerticalStackLayout Spacing="10">
+
+                                <CollectionView ItemsSource="{Binding QuizChoices}"
+                                                SelectionMode="None">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Button Text="{Binding .}"
+                                                    Clicked="PickChoice"
+                                                    Padding="14"
+                                                    CornerRadius="14"
+                                                    BackgroundColor="#2E2E38"
+                                                    TextColor="White"/>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,6,0,0">
+                            <Button Text="Skip"
+                                    Clicked="SkipQuiz"
+                                    BackgroundColor="#3A3A46"
+                                    TextColor="White"
+                                    CornerRadius="14"
+                                    Grid.Column="0"/>
+
+                            <Button Text="Continue"
+                                    Clicked="SkipQuiz"
+                                    BackgroundColor="#78C8FF"
+                                    TextColor="Black"
+                                    CornerRadius="14"
+                                    Grid.Column="1"/>
+                        </Grid>
+
+                        <Label Text="(Tip: correct answers give bonus points. Wrong answers push the board up.)"
+                               FontSize="12"
+                               TextColor="#DCDCE6"
+                               Opacity="0.75"
+                               HorizontalTextAlignment="Center"
+                               Margin="0,4,0,0"/>
+
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="1"
+                Margin="16"
+                BackgroundColor="#222228"
+                Stroke="#FFFFFF40"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 18"
+                Padding="18">
+
+            <Border.Shadow>
+                <Shadow Opacity="0.35" Radius="12" Offset="0,6" />
+            </Border.Shadow>
+
+            <VerticalStackLayout Spacing="14">
+
+                <!-- HUD -->
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                    <Label Text="Score" TextColor="#DCDCE6" Grid.Row="0" Grid.Column="0"/>
+                    <Label x:Name="ScoreValue"
+                           Text="{Binding Score}"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Grid.Row="0" Grid.Column="1"
+                           HorizontalTextAlignment="End"/>
+
+                    <Label Text="Best" TextColor="#DCDCE6" Grid.Row="1" Grid.Column="0"/>
+                    <Label Text="{Binding BestScore}"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Grid.Row="1" Grid.Column="1"
+                           HorizontalTextAlignment="End"/>
+
+                    <Label Text="Level" TextColor="#DCDCE6" Grid.Row="2" Grid.Column="0"/>
+                    <Label x:Name="LevelValue"
+                           Text="{Binding Level}"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Grid.Row="2" Grid.Column="1"
+                           HorizontalTextAlignment="End"/>
+
+                    <Label Text="Min Len" TextColor="#DCDCE6" Grid.Row="3" Grid.Column="0"/>
+                    <Label Text="{Binding MinLen}"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Grid.Row="3" Grid.Column="1"
+                           HorizontalTextAlignment="End"/>
+
+                    <Label Text="Combo" TextColor="#DCDCE6" Grid.Row="4" Grid.Column="0"/>
+                    <Label x:Name="ComboValue"
+                           Text="{Binding ComboMultiplier, StringFormat='x{0:0.00}'}"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           Grid.Row="4" Grid.Column="1"
+                           HorizontalTextAlignment="End"
+                           IsVisible="{Binding IsComboActive}"/>
+                    <Label Text="—"
+                           TextColor="#DCDCE6"
+                           Grid.Row="4" Grid.Column="1"
+                           HorizontalTextAlignment="End"
+                           IsVisible="{Binding IsComboActive, Converter={StaticResource InverseBoolConverter}}"/>
+                </Grid>
+
+                <!-- Next / Hold previews -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                        <Label Text="Next" TextColor="White" FontSize="16"/>
+                        <GraphicsView x:Name="NextPreview" HeightRequest="140" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="Hold" TextColor="White" FontSize="16"/>
+                        <GraphicsView x:Name="HoldPreview" HeightRequest="140" />
+                    </VerticalStackLayout>
+
+                </Grid>
+
+                <!-- Sound Toggle -->
+                <Label Text="Settings" FontSize="16" TextColor="White" />
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="10">
+                    <Label Text="SFX" TextColor="#DCDCE6" Grid.Row="0" Grid.Column="0"/>
+                    <Switch x:Name="SfxSwitch"
+                            IsToggled="{Binding SfxEnabled}"
+                            Toggled="OnSettingsToggled"
+                            Unfocused="OnSettingsUnfocused"
+                            Grid.Row="0" Grid.Column="1"/>
+
+                    <Label Text="Music" TextColor="#DCDCE6" Grid.Row="1" Grid.Column="0"/>
+                    <Switch x:Name="MusicSwitch"
+                            IsToggled="{Binding MusicEnabled}"
+                            Toggled="OnSettingsToggled"
+                            Unfocused="OnSettingsUnfocused"
+                            Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+
+                <!-- Words list -->
+                <Label Text="Words" FontSize="16" TextColor="White" />
+                <CollectionView ItemsSource="{Binding RecentWords}" HeightRequest="260">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Label Text="{Binding .}" FontSize="16" TextColor="#DCDCE6"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

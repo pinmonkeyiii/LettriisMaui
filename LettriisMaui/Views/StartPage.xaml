@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LettriisMaui.Views.StartPage"
+             BackgroundColor="#0A0A0E">
+
+    <!-- Root -->
+    <Grid>
+        <!-- Background image -->
+        <Image Source="{DynamicResource GameBackgroundImage}"
+               Aspect="AspectFill"
+               Opacity="1"
+               InputTransparent="True" />
+
+        <!-- Dark overlay gradient-ish -->
+        <BoxView Color="#000000"
+                 Opacity="0.45"
+                 InputTransparent="True" />
+
+        <!-- Centered content -->
+        <ScrollView x:Name="StartScroll"
+            Orientation="Vertical"
+            HorizontalScrollBarVisibility="Never"
+            VerticalScrollBarVisibility="Default">
+            <Grid x:Name="ContentHost"
+                  Padding="24"
+                  RowDefinitions="Auto,Auto"
+                  HorizontalOptions="Center"
+                  VerticalOptions="Start"
+                  MaximumWidthRequest="1120"
+                  Margin="0,40,0,40">
+
+                <!-- Header -->
+                <Grid x:Name="HeaderRow" ColumnDefinitions="*,Auto" Margin="0,8,0,14">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Lettriis"
+                               FontSize="40"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                        <Label Text="Type a username to start. Adjust options, pick a theme, chase high scores."
+                               FontSize="14"
+                               TextColor="#DCDCE6"
+                               Opacity="0.92"/>
+                    </VerticalStackLayout>
+
+                    <!-- Options toggle -->
+                    <Button x:Name="OptionsButton"
+                            Grid.Column="1"
+                            Text="Options"
+                            BackgroundColor="#1E1F26"
+                            TextColor="White"
+                            CornerRadius="14"
+                            Padding="14,10"
+                            Clicked="OnToggleOptions"/>
+                </Grid>
+
+                <!-- Main card (shadow + stroke) -->
+                <Grid Grid.Row="1" Padding="3" Margin="0" IsClippedToBounds="False">
+                    <!-- Shadow layer (no input) -->
+                    <Border BackgroundColor="#00000000"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 18"
+                            InputTransparent="True">
+                        <Border.Shadow>
+                            <Shadow Opacity="0.35" Radius="16" Offset="0,8" />
+                        </Border.Shadow>
+                    </Border>
+
+                    <!-- Stroke + content layer -->
+                    <Border StrokeThickness="1"
+                            BackgroundColor="#1E1F26"
+                            Stroke="#E6C36A"
+                            Padding="18"
+                            StrokeShape="RoundRectangle 18">
+
+                        <!-- Two-column desktop, stacked on phone -->
+                        <Grid x:Name="MainGrid"
+                          ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,*"
+                          ColumnSpacing="16"
+                          RowSpacing="16">
+
+                            <!-- LEFT: Sign in + play -->
+                            <VerticalStackLayout x:Name="LeftPanel" Grid.Row="1"  Spacing="14">
+
+                                <Label Text="Sign In"
+                                   FontSize="26"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="Start" />
+
+                                <Border BackgroundColor="#262834"
+                                    Stroke="#E6C36A"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="14"
+                                    Margin="0">
+
+                                    <VerticalStackLayout Spacing="10">
+
+                                        <Label Text="Username"
+                                           FontSize="13"
+                                           TextColor="#DCDCE6"
+                                           Opacity="0.9"/>
+
+                                        <Entry x:Name="UserEntry"
+                                           Placeholder="Username"
+                                           TextColor="White"
+                                           PlaceholderColor="#A0A0AA"
+                                           BackgroundColor="#2E2E38"
+                                           ReturnType="Go"
+                                           Completed="OnUserEntryCompleted"
+                                           TextChanged="OnUsernameChanged"
+                                           ClearButtonVisibility="WhileEditing"/>
+
+                                        <Grid ColumnDefinitions="*,*"
+                                          ColumnSpacing="10">
+
+                                            <Button x:Name="PlayButton"
+                                                Text="Play"
+                                                HorizontalOptions="Fill"
+                                                Padding="12,10"
+                                                BackgroundColor="#78C8FF"
+                                                TextColor="#0A0A0E"
+                                                CornerRadius="14"
+                                                Clicked="OnPlay"
+                                                IsEnabled="False"/>
+
+                                            <Button Text="How To Play"
+                                                    Grid.Column="1"
+                                                    HorizontalOptions="Fill"
+                                                    Padding="12,10"
+                                                    BackgroundColor="#78C8FF"
+                                                    TextColor="#0A0A0E"
+                                                    CornerRadius="14"
+                                                    Clicked="OnHowToPlay"/>
+                                        </Grid>
+
+                                        <Label x:Name="HintLabel"
+                                           Text="Tip: Press Enter to start."
+                                           FontSize="12"
+                                           TextColor="#DCDCE6"
+                                           Opacity="0.85"/>
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <!-- OPTIONS PANEL (toggled) -->
+                                <Border x:Name="OptionsPanel"
+                                    IsVisible="False"
+                                    BackgroundColor="#262834"
+                                    Stroke="#E6C36A"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="14"
+                                    Margin="0">
+                                    <ScrollView x:Name="OptionsScroll" MaximumHeightRequest="420">
+                                        <VerticalStackLayout Spacing="12">
+
+                                            <Label Text="Game Options"
+                                                   FontSize="18"
+                                                   TextColor="White"
+                                                   FontAttributes="Bold" />
+
+                                            <Grid ColumnDefinitions="*,190"
+                                              RowDefinitions="Auto,Auto,Auto"
+                                              RowSpacing="10"
+                                              ColumnSpacing="10">
+
+                                                <!-- Difficulty preset -->
+                                                <Label Text="Difficulty"
+                                                       TextColor="#DCDCE6"
+                                                       VerticalTextAlignment="Center" />
+                                                <Picker x:Name="DifficultyPicker"
+                                                        Grid.Column="1"
+                                                        HorizontalOptions="Fill"
+                                                        BackgroundColor="#2E2E38"
+                                                        TextColor="White" />
+
+                                                <!-- Starting level -->
+                                                <Label Grid.Row="1"
+                                                        Text="Starting Level"
+                                                        TextColor="#DCDCE6"
+                                                        VerticalTextAlignment="Center" />
+                                                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10" HorizontalOptions="End">
+                                                    <Button Text="–" WidthRequest="42" CornerRadius="12" BackgroundColor="#262834" TextColor="White" Clicked="OnLevelMinus"/>
+                                                    <Label x:Name="LevelLabel" Text="1" TextColor="White" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" WidthRequest="38"/>
+                                                    <Button Text="+" WidthRequest="42" CornerRadius="12" BackgroundColor="#262834" TextColor="White" Clicked="OnLevelPlus"/>
+                                                </HorizontalStackLayout>
+
+                                                <!-- Theme -->
+                                                <Label Grid.Row="2"
+                                                       Text="Theme"
+                                                       TextColor="#DCDCE6"
+                                                       VerticalTextAlignment="Center" />
+                                                <Picker x:Name="ThemePicker"
+                                                        Grid.Column="1"
+                                                        Grid.Row="2"
+                                                        HorizontalOptions="Fill"
+                                                        BackgroundColor="#2E2E38"
+                                                        TextColor="White" />
+
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                                <Button Text="Reset Options"
+                                                BackgroundColor="#262834"
+                                                TextColor="White"
+                                                CornerRadius="14"
+                                                Clicked="OnResetOptions"/>
+                                                <Button Text="Apply"
+                                                Grid.Column="1"
+                                                BackgroundColor="#78C8FF"
+                                                TextColor="Black"
+                                                CornerRadius="14"
+                                                Clicked="OnApplyOptions"/>
+                                            </Grid>
+
+                                            <Label Text="(Difficulty presets can control start speed, minimum word length, and how punishing the quiz is.)"
+                                           FontSize="12"
+                                           TextColor="#DCDCE6"
+                                           Opacity="0.85" />
+                                        </VerticalStackLayout>
+                                    </ScrollView>
+                                </Border>
+
+                            </VerticalStackLayout>
+
+                            <!-- RIGHT: High Scores -->
+                            <Border x:Name="RightPanel"
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill"
+                                BackgroundColor="#262834"
+                                Stroke="#E6C36A"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="14"
+                                Margin="0">
+
+                                <VerticalStackLayout Spacing="10">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="High Scores"
+                                           FontSize="18"
+                                           TextColor="White"
+                                           FontAttributes="Bold"/>
+                                        <Button Grid.Column="1"
+                                            Text="Clear"
+                                            BackgroundColor="#262834"
+                                            TextColor="White"
+                                            CornerRadius="12"
+                                            Padding="12,8"
+                                            Clicked="OnClearHighScores"
+                                            IsVisible="{Binding Source={x:Reference HighScoresList}, Path=IsVisible}" />
+                                    </Grid>
+
+                                    <CollectionView x:Name="HighScoresList"
+                                                ItemsLayout="VerticalList"
+                                                SelectionMode="None">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                                  Padding="8,8"
+                                                  RowDefinitions="Auto">
+                                                    <Label Text="{Binding Rank}"
+                                                       TextColor="#DCDCE6"
+                                                       Opacity="0.9"
+                                                       WidthRequest="28" />
+                                                    <Label Grid.Column="1"
+                                                       Text="{Binding Name}"
+                                                       TextColor="#F2F3F5"
+                                                       LineBreakMode="TailTruncation"/>
+                                                    <Label Grid.Column="2"
+                                                       Text="{Binding Score}"
+                                                       TextColor="#78C8FF" 
+                                                       FontAttributes="Bold"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+                                    <Label x:Name="HighScoresEmptyLabel"
+                                       Text="No scores yet. Start a run!"
+                                       FontSize="12"
+                                       TextColor="#DCDCE6"
+                                       Opacity="0.85"
+                                       IsVisible="False"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

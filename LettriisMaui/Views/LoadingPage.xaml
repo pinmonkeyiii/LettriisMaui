@@ -1,0 +1,32 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LettriisMaui.Views.LoadingPage"
+             BackgroundColor="#0A0A0E">
+    <Grid>
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped"/>
+        </Grid.GestureRecognizers>
+
+        <Image Source="{DynamicResource LoadingImage}"
+               Aspect="AspectFit"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               WidthRequest="420"
+               HeightRequest="420"/>
+
+        <Label Text="{Binding StatusText}"
+               TextColor="White"
+               Opacity="0.85"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,56"/>
+
+        <Label Text="Click / Tap to continue"
+               IsVisible="{Binding CanContinue}"
+               TextColor="White"
+               Opacity="0.95"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,28"/>
+    </Grid>
+</ContentPage>

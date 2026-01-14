@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LettriisMaui.Resources.Themes.Theme_Alt">
+
+    <x:String x:Key="ThemeName">Alt</x:String>
+
+    <FileImageSource x:Key="GameBackgroundImage">bg_game.jpg</FileImageSource>
+    <FileImageSource x:Key="GameBackgroundImage_lv_1_5">bg_lv_1_5.png</FileImageSource>
+    <FileImageSource x:Key="LoadingImage">bg_loading.jpg</FileImageSource>
+
+    <Color x:Key="ShellBackground">#0A0A0E</Color>
+</ResourceDictionary>
